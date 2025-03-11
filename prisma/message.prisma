@@ -8,6 +8,7 @@ generator client {
 }
 
 enum Role {
+  USER
   PATIENT
   DOCTOR
   RECEPTIONIST
@@ -46,35 +47,9 @@ enum AppointmentTypeEnum {
   EMERGENCY
 }
 
-enum InventoryUnit {
-  PCS
-  BOXES
-  SETS
-  PACKS
-  BOTTLES
-}
-
-enum InventoryStatus {
-  IN_STOCK
-  LOW_STOCK
-  OUT_OF_STOCK
-}
-
-enum TaskStatus {
-  PENDING
-  IN_PROGRESS
-  COMPLETED
-}
-
-enum TaskPriority {
-  HIGH
-  MEDIUM
-  LOW
-}
-
 model Sex {
   id     Int    @id @default(autoincrement())
-  gender Gender  @unique
+  gender Gender @unique
   users  User[]
 }
 
@@ -116,38 +91,34 @@ model User {
   doctor            Doctor?         @relation("UserToDoctor")
   receptionist      Receptionist?   @relation("UserToReceptionist")
   admin             Admin?          @relation("UserToAdmin")
-  assigneeTasks  Task[]   @relation("UserToAssignee")
-  assignorTasks  Task[]   @relation("UserToAssignor")
   createdAt         DateTime        @default(now())
   updatedAt         DateTime        @updatedAt
-
   @@map("users")
 }
 
 model Patient {
-  userId         Int            @id
-  user           User           @relation("UserToPatient", fields: [userId], references: [id], onDelete: Cascade)
+  userId         Int           @id
   medicalHistory String?
   appointments   Appointment[]
   payments       Payment[]
   queueEntries   Queue[]
   actions        Action[]
-
+  user   User @relation("UserToPatient", fields: [userId], references: [id], onDelete: Cascade)
   @@map("patients")
 }
+
 model Doctor {
   userId       Int           @id
-  user         User          @relation("UserToDoctor", fields: [userId], references: [id], onDelete: Cascade)
   appointments Appointment[]
   payments     Payment[]
-
+  user   User @relation("UserToDoctor", fields: [userId], references: [id], onDelete: Cascade)
   @@map("doctors")
 }
 
 model Receptionist {
   userId Int @id
-  user   User   @relation("UserToReceptionist", fields: [userId], references: [id], onDelete: Cascade)
-
+  user   User   @relation("UserToReceptionist", fields: [userId], references: [id])
+  
   @@map("receptionists")
 }
 
@@ -170,8 +141,6 @@ model Action {
   appointmentType      AppointmentType   @relation(fields: [appointmentTypeId], references: [id], onDelete: Cascade)
   appointments         Appointment[]
   payments             Payment[]
-  isCompleted          Boolean           @default(false)
-  completedAt DateTime?
 }
 
 model Appointment {
@@ -215,39 +184,4 @@ model Payment {
   patient     Patient       @relation(fields: [patientId], references: [userId], onDelete: Cascade)
   status      PaymentStatus @relation(fields: [statusId], references: [id])
   action      Action        @relation(fields: [actionId], references: [id], onDelete: Cascade)
-}
-
-model Category {
-  id          Int         @id @default(autoincrement())
-  name        String      @unique
-  inventories Inventory[]
-}
-
-model Inventory {
-  id         Int             @id @default(autoincrement())
-  name       String
-  categoryId Int
-  category   Category        @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  quantity   Int
-  unit       InventoryUnit
-  status     InventoryStatus
-  expiryDate DateTime?
-  createdAt  DateTime        @default(now())
-  updatedAt  DateTime        @updatedAt
-}
-
-model Task {
-  id          String       @id @default(cuid())
-  title       String
-  description String?
-  assigneeId  Int
-  assignee    User         @relation("UserToAssignee", fields: [assigneeId], references: [id])
-  assignorId  Int
-  assignor    User         @relation("UserToAssignor", fields: [assignorId], references: [id])
-  priority    TaskPriority @default(MEDIUM)
-  status      TaskStatus   @default(PENDING)
-  dueDate     DateTime
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  completedAt DateTime?
 }

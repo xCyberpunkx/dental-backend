@@ -15,6 +15,22 @@ const { hash } = require("bcrypt");
 const prisma = new PrismaClient();
 
 async function main() {
+<<<<<<< HEAD
+  // ----------------------------------------------------
+  // Seed Lookup Tables
+  // ----------------------------------------------------
+  // Seed Sex records
+  const maleSex = await prisma.sex.upsert({
+    where: { gender: "MALE" },
+    update: {},
+    create: { gender: "MALE" },
+  });
+
+  const femaleSex = await prisma.sex.upsert({
+    where: { gender: "FEMALE" },
+    update: {},
+    create: { gender: "FEMALE" },
+=======
   console.log(`Start seeding...`);
 
   // Clear existing data (Optional - comment out if not needed)
@@ -25,6 +41,7 @@ async function main() {
     data: {
       gender: Gender.MALE,
     },
+>>>>>>> a6f33b26e3c0ae699a00fe7e32942e5014b7dbce
   });
 
   const femaleGender = await prisma.sex.create({
@@ -77,7 +94,19 @@ async function main() {
 
   const emergencyType = await prisma.appointmentType.create({
     data: {
+<<<<<<< HEAD
+      email: "doctor@example.com",
+      password: "doctorpassword",
+      firstName: "Alice",
+      lastName: "Smith",
+      dateOfBirth: new Date("1980-05-15"),
+      phone: "1111111111",
+      sex: { connect: { id: femaleSex.id } },
+      role: "DOCTOR",
+      doctor: { create: {} },
+=======
       type: AppointmentTypeEnum.EMERGENCY,
+>>>>>>> a6f33b26e3c0ae699a00fe7e32942e5014b7dbce
     },
   });
 
@@ -86,19 +115,55 @@ async function main() {
   // Create PaymentStatus entries
   const pendingPayment = await prisma.paymentStatus.create({
     data: {
+<<<<<<< HEAD
+      email: "patient1@example.com",
+      password: "patient1password",
+      firstName: "John",
+      lastName: "Doe",
+      dateOfBirth: new Date("1990-01-01"),
+      phone: "2222222222",
+      sex: { connect: { id: maleSex.id  } },
+      role: "PATIENT",
+      patient: { create: { medicalHistory: "No allergies" } },
+=======
       status: PaymentStatusEnum.PENDING,
+>>>>>>> a6f33b26e3c0ae699a00fe7e32942e5014b7dbce
     },
   });
 
   const paidPayment = await prisma.paymentStatus.create({
     data: {
+<<<<<<< HEAD
+      email: "patient2@example.com",
+      password: "patient2password",
+      firstName: "Jane",
+      lastName: "Doe",
+      dateOfBirth: new Date("1992-02-02"),
+      phone: "3333333333",
+      sex: { connect: { id: femaleSex.id } },
+      role: "PATIENT",
+      patient: { create: { medicalHistory: "Diabetic" } },
+=======
       status: PaymentStatusEnum.PAID,
+>>>>>>> a6f33b26e3c0ae699a00fe7e32942e5014b7dbce
     },
   });
 
   const cancelledPayment = await prisma.paymentStatus.create({
     data: {
+<<<<<<< HEAD
+      email: "reception@example.com",
+      password: "receptionpassword",
+      firstName: "Bob",
+      lastName: "Brown",
+      dateOfBirth: new Date("1985-03-03"),
+      phone: "4444444444",
+      sex: { connect: { id: maleSex.id } },
+      role: "RECEPTIONIST",
+      receptionist: { create: {} },
+=======
       status: PaymentStatusEnum.CANCELLED,
+>>>>>>> a6f33b26e3c0ae699a00fe7e32942e5014b7dbce
     },
   });
 
@@ -110,6 +175,17 @@ async function main() {
   // Admin user
   const adminUser = await prisma.user.create({
     data: {
+<<<<<<< HEAD
+      email: "admin@example.com",
+      password: "adminpassword",
+      firstName: "Charlie",
+      lastName: "Green",
+      dateOfBirth: new Date("1975-04-04"),
+      phone: "5555555555",
+      sex: { connect: { id: maleSex.id } },
+      role: "ADMIN",
+      admin: { create: {} },
+=======
       email: "admin@hospital.com",
       password: hashedPassword,
       firstName: "Admin",
@@ -122,6 +198,7 @@ async function main() {
       admin: {
         create: {},
       },
+>>>>>>> a6f33b26e3c0ae699a00fe7e32942e5014b7dbce
     },
   });
 
